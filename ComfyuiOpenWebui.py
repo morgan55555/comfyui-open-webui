@@ -44,6 +44,10 @@ class OpenwebuiVision:
         return {
             "required": {
                 "images": ("IMAGE",),
+                "query": ("STRING", {
+                    "multiline": True,
+                    "default": ""
+                }),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "describe the image"
@@ -59,7 +63,7 @@ class OpenwebuiVision:
     FUNCTION = "openwebui_vision"
     CATEGORY = "OpenWebUI"
 
-    def openwebui_vision(self, images, prompt, model, seed, format):
+    def openwebui_vision(self, images, query, prompt, model, seed, format):
         images_b64 = []
 
         if format == "text":
@@ -83,7 +87,8 @@ class OpenwebuiVision:
         }
         payload = {
             'model': model,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': [{'role': 'user', 'content': query},
+                         {'role': 'user', 'content': prompt}],
             'images': images_b64,
             'options': {},
             'format': format,
@@ -113,6 +118,10 @@ class OpenwebuiGenerate:
         seed = random.randint(1, 2 ** 31)
         return {
             "required": {
+                "query": ("STRING", {
+                    "multiline": True,
+                    "default": ""
+                }),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "What is Art?"
@@ -128,7 +137,7 @@ class OpenwebuiGenerate:
     FUNCTION = "openwebui_generate"
     CATEGORY = "OpenWebUI"
 
-    def openwebui_generate(self, prompt, model, seed, format):
+    def openwebui_generate(self, query, prompt, model, seed, format):
 
         api_url = os.environ['OPENWEBUI_URL']
         api_key = os.environ['OPENWEBUI_KEY']
@@ -140,7 +149,8 @@ class OpenwebuiGenerate:
         }
         payload = {
             'model': model,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': [{'role': 'user', 'content': query},
+                         {'role': 'user', 'content': prompt}],
             'options': {'seed': seed},
             'format': format,
             'seed': seed,
@@ -157,6 +167,7 @@ class OpenwebuiGenerate:
                 return (message.get('content',""),)
 
         return ("",)
+
 
 
 NODE_CLASS_MAPPINGS = {

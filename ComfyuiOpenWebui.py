@@ -85,13 +85,22 @@ class OpenwebuiVision:
             'model': model,
             'messages': [{'role': 'user', 'content': prompt}],
             'images': images_b64,
-            'options': {'seed': seed},
+            'options': {},
             'format': format,
+            'seed': seed,
         }
 
         response = post(url, headers=headers, json=payload)
+        if response.ok:
+            data = response.json()
+            choices = data.get('choices', [])
+            choice = choices[0] if len(choices) > 0 else None
+            message = choice.get('message') if choice is not None else None
 
-        return (response['response'],)
+            if message:
+                return (message.get('content',""),)
+
+        return ("",)
 
 
 
@@ -134,11 +143,20 @@ class OpenwebuiGenerate:
             'messages': [{'role': 'user', 'content': prompt}],
             'options': {'seed': seed},
             'format': format,
+            'seed': seed,
         }
 
         response = post(url, headers=headers, json=payload)
+        if response.ok:
+            data = response.json()
+            choices = data.get('choices', [])
+            choice = choices[0] if len(choices) > 0 else None
+            message = choice.get('message') if choice is not None else None
 
-        return (response['response'],)
+            if message:
+                return (message.get('content',""),)
+
+        return ("",)
 
 
 NODE_CLASS_MAPPINGS = {

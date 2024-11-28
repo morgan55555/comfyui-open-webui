@@ -1,9 +1,9 @@
 import { app } from "/scripts/app.js";
 
 app.registerExtension({
-    name: "Comfy.OllamaNode",
+    name: "Comfy.OpenwebuiNode",
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
-    if (["OllamaGenerate", "OllamaGenerateAdvance", "OllamaVision"].includes(nodeData.name) ) {
+    if (["OpenwebuiaGenerate", "OpenwebuiVision"].includes(nodeData.name) ) {
       const originalNodeCreated = nodeType.prototype.onNodeCreated;
       nodeType.prototype.onNodeCreated = async function () {
         if (originalNodeCreated) {
@@ -15,7 +15,7 @@ app.registerExtension({
 
         const fetchModels = async (url) => {
           try {
-            const response = await fetch("/ollama/get_models", {
+            const response = await fetch("/openwebui/get_models", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

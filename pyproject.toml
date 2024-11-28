@@ -1,15 +1,15 @@
 [project]
-name = "comfyui-ollama"
-description = "Custom ComfyUI Nodes for interacting with [a/Ollama](https://ollama.com/) using the [a/ollama python client](https://github.com/ollama/ollama-python).\nIntegrate the power of LLMs into CompfyUI workflows easily."
-version = "1.0.16"
+name = "comfyui-openwebui"
+description = "Custom ComfyUI Nodes for interacting with [a/OpenWebUI](https://openwebui.com/).\nIntegrate the power of LLMs into ComfyUI workflows easily."
+version = "0.0.1"
 license = { file = "LICENSE" }
-dependencies = ["ollama"]
+dependencies = []
 
 [project.urls]
-Repository = "https://github.com/stavsap/comfyui-ollama"
+Repository = "https://github.com/morgan55555/comfyui-open-webui"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = "stavsap"
-DisplayName = "comfyui-ollama"
+PublisherId = "morgan55555"
+DisplayName = "comfyui-open-webui"
 Icon = ""

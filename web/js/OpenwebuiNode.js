@@ -3,26 +3,22 @@ import { app } from "/scripts/app.js";
 app.registerExtension({
     name: "Comfy.OpenwebuiNode",
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
-    if (["OpenwebuiaGenerate", "OpenwebuiVision"].includes(nodeData.name) ) {
+    if (["OpenwebuiGenerate", "OpenwebuiVision"].includes(nodeData.name) ) {
       const originalNodeCreated = nodeType.prototype.onNodeCreated;
       nodeType.prototype.onNodeCreated = async function () {
         if (originalNodeCreated) {
           originalNodeCreated.apply(this, arguments);
         }
 
-        const urlWidget = this.widgets.find((w) => w.name === "url");
         const modelWidget = this.widgets.find((w) => w.name === "model");
 
-        const fetchModels = async (url) => {
+        const fetchModels = async () => {
           try {
             const response = await fetch("/openwebui/get_models", {
-              method: "POST",
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                url,
-              }),
             });
 
             if (response.ok) {
@@ -40,12 +36,11 @@ app.registerExtension({
         };
 
         const updateModels = async () => {
-          const url = urlWidget.value;
           const prevValue = modelWidget.value
           modelWidget.value = ''
           modelWidget.options.values = []
 
-          const models = await fetchModels(url);
+          const models = await fetchModels();
 
           // Update modelWidget options and value
           modelWidget.options.values = models;
@@ -60,7 +55,7 @@ app.registerExtension({
           console.debug("Updated modelWidget.value:", modelWidget.value);
         };
 
-        urlWidget.callback = updateModels;
+
 
         const dummy = async () => {
           // calling async method will update the widgets with actual value from the browser and not the default from Node definition.

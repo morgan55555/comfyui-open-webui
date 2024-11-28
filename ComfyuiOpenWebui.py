@@ -6,15 +6,11 @@ import base64
 from io import BytesIO
 from server import PromptServer
 from aiohttp import web
-from pprint import pprint
 from PIL import Image
-from PIL.PngImagePlugin import PngInfo
 import os
 
-@PromptServer.instance.routes.post("/openwebui/get_models")
+@PromptServer.instance.routes.get("/openwebui/get_models")
 async def get_models_endpoint(request):
-    data = await request.json()
-
     api_url = os.environ['OPENWEBUI_URL']
     api_key = os.environ['OPENWEBUI_KEY']
 

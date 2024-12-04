@@ -29,9 +29,8 @@ async def get_models_endpoint(request):
             models = [model['id'] for model in models]
             return web.json_response(models)
 
-    except Exception as e:
+    except Exception:
         return web.json_response([])
-
 
 
 class OpenwebuiVision:
@@ -44,12 +43,16 @@ class OpenwebuiVision:
         return {
             "required": {
                 "images": ("IMAGE",),
+                "system_prompt": ("STRING", {
+                    "multiline": True,
+                    "default": ""
+                }),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "describe the image"
                 }),
                 "model": ((), {}),
-                "format": (["text", "json",''],),
+                "format": (["text", "json", ''],),
                 "seed": ("INT", {"default": seed, "min": 0, "max": 2 ** 31, "step": 1}),
             },
         }
@@ -59,7 +62,7 @@ class OpenwebuiVision:
     FUNCTION = "openwebui_vision"
     CATEGORY = "OpenWebUI"
 
-    def openwebui_vision(self, images, prompt, model, seed, format):
+    def openwebui_vision(self, images, system_prompt, prompt, model, seed, format):
         images_b64 = []
 
         if format == "text":
@@ -76,6 +79,11 @@ class OpenwebuiVision:
         api_url = os.environ['OPENWEBUI_URL']
         api_key = os.environ['OPENWEBUI_KEY']
 
+        messages = [{'role': 'user', 'content': prompt}]
+
+        if system_prompt:
+            messages.insert(0, {'role': 'system', 'content': system_prompt})
+
         url = f'{api_url}/api/chat/completions'
         headers = {
             'Authorization': f'Bearer {api_key}',
@@ -83,9 +91,9 @@ class OpenwebuiVision:
         }
         payload = {
             'model': model,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': messages,
             'images': images_b64,
-            'options': {},
+            'options': {'seed': seed},
             'format': format,
             'seed': seed,
         }
@@ -98,10 +106,9 @@ class OpenwebuiVision:
             message = choice.get('message') if choice is not None else None
 
             if message:
-                return (message.get('content',""),)
+                return (message.get('content', ""),)
 
         return ("",)
-
 
 
 class OpenwebuiGenerate:
@@ -113,6 +120,10 @@ class OpenwebuiGenerate:
         seed = random.randint(1, 2 ** 31)
         return {
             "required": {
+                "system_prompt": ("STRING", {
+                    "multiline": True,
+                    "default": ""
+                }),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "What is Art?"
@@ -128,10 +139,15 @@ class OpenwebuiGenerate:
     FUNCTION = "openwebui_generate"
     CATEGORY = "OpenWebUI"
 
-    def openwebui_generate(self, prompt, model, seed, format):
+    def openwebui_generate(self, system_prompt, prompt, model, seed, format):
 
         api_url = os.environ['OPENWEBUI_URL']
         api_key = os.environ['OPENWEBUI_KEY']
+
+        messages = [{'role': 'user', 'content': prompt}]
+
+        if system_prompt:
+            messages.insert(0, {'role': 'system', 'content': system_prompt})
 
         url = f'{api_url}/api/chat/completions'
         headers = {
@@ -140,7 +156,7 @@ class OpenwebuiGenerate:
         }
         payload = {
             'model': model,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': messages,
             'options': {'seed': seed},
             'format': format,
             'seed': seed,
@@ -154,10 +170,9 @@ class OpenwebuiGenerate:
             message = choice.get('message') if choice is not None else None
 
             if message:
-                return (message.get('content',""),)
+                return (message.get('content', ""),)
 
         return ("",)
-
 
 
 NODE_CLASS_MAPPINGS = {

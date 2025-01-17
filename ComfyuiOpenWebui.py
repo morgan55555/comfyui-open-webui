@@ -79,7 +79,7 @@ class OpenwebuiVision:
         api_url = os.environ['OPENWEBUI_URL']
         api_key = os.environ['OPENWEBUI_KEY']
 
-        messages = [{'role': 'user', 'content': prompt}]
+        messages = [{'role': 'user', 'content': prompt, 'images': images_b64,}]
 
         if system_prompt:
             messages.insert(0, {'role': 'system', 'content': system_prompt})
@@ -92,10 +92,8 @@ class OpenwebuiVision:
         payload = {
             'model': model,
             'messages': messages,
-            'images': images_b64,
-            'options': {'seed': seed},
-            'format': format,
-            'seed': seed,
+            'params': {'seed': seed},
+            'format': format
         }
 
         response = post(url, headers=headers, json=payload)
@@ -157,9 +155,8 @@ class OpenwebuiGenerate:
         payload = {
             'model': model,
             'messages': messages,
-            'options': {'seed': seed},
-            'format': format,
-            'seed': seed,
+            'params': {'seed': seed},
+            'format': format
         }
 
         response = post(url, headers=headers, json=payload)

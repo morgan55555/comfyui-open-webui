@@ -79,7 +79,7 @@ class OpenwebuiVision:
         api_url = os.environ['OPENWEBUI_URL']
         api_key = os.environ['OPENWEBUI_KEY']
 
-        messages = [{'role': 'user', 'content': prompt, 'images': images_b64,}]
+        messages = [{'role': 'user', 'content': prompt, 'images': images_b64}]
 
         if system_prompt:
             messages.insert(0, {'role': 'system', 'content': system_prompt})
@@ -105,6 +105,8 @@ class OpenwebuiVision:
 
             if message:
                 return (message.get('content', ""),)
+        else:
+            response.raise_for_status()
 
         return ("",)
 
@@ -168,6 +170,8 @@ class OpenwebuiGenerate:
 
             if message:
                 return (message.get('content', ""),)
+        else:
+            response.raise_for_status()
 
         return ("",)
 

@@ -92,8 +92,10 @@ class OpenwebuiVision:
         payload = {
             'model': model,
             'messages': messages,
-            'params': {'seed': seed},
-            'format': format
+            'params': {
+                'seed': seed,
+                'format': format
+            }
         }
 
         response = post(url, headers=headers, json=payload)
@@ -157,8 +159,10 @@ class OpenwebuiGenerate:
         payload = {
             'model': model,
             'messages': messages,
-            'params': {'seed': seed},
-            'format': format
+            'params': {
+                'seed': seed,
+                'format': format
+            }
         }
 
         response = post(url, headers=headers, json=payload)
